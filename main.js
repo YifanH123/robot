@@ -12,10 +12,10 @@ window.addEventListener('load', function(){
             this.width = width;
             this.height = height;
             this.player = new Player(this);
-            this.input = new InputHandler();
+            this.input = new InputHandler(this);
         }
         update(){
-            this.player.update(this.input.keys);
+            this.player.update(this.input);
         }
         draw(context){
             this.player.draw(context);
