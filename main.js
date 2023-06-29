@@ -27,6 +27,7 @@ window.addEventListener('load', function(){
 
     function animate(){
         c.clearRect(0, 0, canvas.width, canvas.height);
+        c.drawImage(document.getElementById("background"),0,0);
         game.update();
         game.draw(c);
         requestAnimationFrame(animate);

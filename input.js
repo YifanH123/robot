@@ -22,25 +22,27 @@ export class InputHandler {
                 this.keys.splice(this.keys.indexOf(e.key), 1);
             }
         });
+        /*
         window.addEventListener('click', (e) => {
-            /*
             if (!this.mousedown) {
                 this.mousedown = true;
             } else {
                 this.mousedown = false;
             }
-            */
             var pos = getMousePos(document.getElementById("gamecanvas"), e);
             this.position = pos;
         });
-        /*
-        window.addEventListener('mousemove', (e) => {
-            if (this.mousedown) {
-                var pos = getMousePos(document.getElementById("gamecanvas"), e);
-                this.position = pos;
-            }
-        });
         */
+        window.addEventListener('mousedown', (e) => {
+            this.mousedown = true;
+        });
+        window.addEventListener('mouseup', (e) => {
+            this.mousedown = false;
+        });
+        window.addEventListener('mousemove', (e) => {
+            var pos = getMousePos(document.getElementById("gamecanvas"), e);
+            this.position = pos;
+        });
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect(),
                 scaleX = canvas.width / rect.width,
@@ -49,7 +51,7 @@ export class InputHandler {
                 x: (evt.clientX - rect.left),
                 y: (evt.clientY - rect.top),
                 sx: scaleX,
-                sy: scaleY
+                sy: scaleY,
             }
         }
     }
