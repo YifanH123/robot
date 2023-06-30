@@ -1,11 +1,12 @@
+import { Object } from "./object.js";
 export class Player {
     constructor(game){
         this.game = game;
         this.image = document.getElementById('player');
         this.width = 100;
         this.height = 91.3;
-        this.inner = 30;
-        this.outer = 100;
+        this.inner = 20;
+        this.outer = 90;
         this.x = 0;
         this.y = 0;
         this.vx = 0;
@@ -13,8 +14,24 @@ export class Player {
         this.speed = 10;
         this.mouse = [0,0];
         this.end = [0,0];
+        this.objects = [];
+        this.objects.push(new Object(this.game,225,100,50,50));
+        this.objects.push(new Object(this.game,225,300,50,50));
     }
     update(input){
+        // collisions
+        function checkCollision(x, y, width, block) {
+            // Check for collision between player and block using bounding box collision detection
+            if (
+                x < block.x + block.width + width &&
+                x + width > block.x &&
+                y < block.y + block.height + width &&
+                y + width > block.y
+            ) {
+                return true;
+            }
+            return false;
+        }
         /* movement
         this.x += this.vx;
         this.y += this.vy;
@@ -36,7 +53,7 @@ export class Player {
         function checkInbound(x1,y1,x2,y2,c) {
             return (x1 - x2) ** 2 + (y1 - y2) ** 2 <= c;
         }
-        function findIntersection(midx,midy,r,lendx,lendy){
+        function findIntersectionCircle(midx,midy,r,lendx,lendy){
             const a = lendx - midx;
             const b = lendy - midy;
             if (a >= 0) {
@@ -48,15 +65,18 @@ export class Player {
             } else {
                 var direction = Math.atan((lendy - midy)/(lendx - midx)) + Math.PI;
             }
-
             return { intersection1X: Math.cos(direction) * r, intersection1Y: Math.sin(direction) * r };
         }
         try {
-            var xcoord = (input.position.x) * input.position.sx,
-                ycoord = (input.position.y) * input.position.sy,
+            var xcoord = (input.position.x),
+                ycoord = (input.position.y),
                 change = this.outer * this.outer;
             if (input.mousedown) {
-                if (checkInbound(xcoord,ycoord,this.x,this.y,change)) {
+                var collisions = false;
+                for (let i = 0; i < this.objects.length; i++) {
+                    collisions = collisions || checkCollision(xcoord, ycoord, this.inner, this.objects[i]);
+                }
+                if (checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
                     this.x = xcoord;
                     this.y = ycoord;
                 }
@@ -65,17 +85,22 @@ export class Player {
             if (checkInbound(xcoord,ycoord,this.x,this.y,change)) {
                 this.end = this.mouse;
             } else {
-                var a = findIntersection(this.x,this.y,100,this.mouse[0],this.mouse[1]);
+                var a = findIntersectionCircle(this.x,this.y,this.outer,this.mouse[0],this.mouse[1]);
                 this.end = [a.intersection1X + this.x, a.intersection1Y + this.y];
             }
         }
         catch(err) {}
     }
     draw(context){
+        /*
         context.drawImage(this.image, 0, 0, this.width, this.height, this.x - this.width/2, this.y - this.height/2, this.width, this.height);
+        */
         context.beginPath();
         context.arc(this.x, this.y, this.inner, 0, 2 * Math.PI);
-        context.stroke();
+        context.fill();
+        context.beginPath();
+        context.arc(this.mouse[0], this.mouse[1], this.inner, 0, 2 * Math.PI);
+        context.stroke()
         context.beginPath();
         context.arc(this.x, this.y, this.outer, 0, 2 * Math.PI);
         context.stroke();
@@ -83,5 +108,8 @@ export class Player {
         context.moveTo(this.x,this.y);
         context.lineTo(this.end[0],this.end[1]);
         context.stroke();
+        for (let a in this.objects) {
+            this.objects[a].draw(context);
+        }
     }
 }

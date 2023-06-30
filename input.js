@@ -40,18 +40,15 @@ export class InputHandler {
             this.mousedown = false;
         });
         window.addEventListener('mousemove', (e) => {
+            this.mousedown = false;
             var pos = getMousePos(document.getElementById("gamecanvas"), e);
             this.position = pos;
         });
         function getMousePos(canvas, evt) {
-            var rect = canvas.getBoundingClientRect(),
-                scaleX = canvas.width / rect.width,
-                scaleY = canvas.height / rect.height;
+            var rect = canvas.getBoundingClientRect();
             return {
                 x: (evt.clientX - rect.left),
-                y: (evt.clientY - rect.top),
-                sx: scaleX,
-                sy: scaleY,
+                y: (evt.clientY - rect.top)
             }
         }
     }

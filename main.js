@@ -1,5 +1,6 @@
 import { Player } from "./player.js";
 import { InputHandler } from "./input.js";
+import { Object } from "./object.js";
 
 window.addEventListener('load', function(){
     const canvas = document.getElementById('gamecanvas');
