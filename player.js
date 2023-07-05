@@ -1,4 +1,3 @@
-import { Object } from "./object.js";
 export class Player {
     constructor(game){
         this.game = game;
