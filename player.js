@@ -1,10 +1,17 @@
+import { Object } from "./object.js";
+
 export class Player {
-    constructor(game){
+    constructor(game) {
         this.game = game;
         this.image = document.getElementById('player');
         this.width = 100;
         this.height = 91.3;
         this.inner = 20;
+        this.pulseInit = this.inner; // the starting point of the radius is set to diameter of player
+        this.pulseR = 0;
+        this.pulseV = 3;
+        this.pulseMax = 40;
+        this.pflag = true;
         this.outer = 90;
         this.x = 0;
         this.y = 0;
@@ -66,6 +73,22 @@ export class Player {
             }
             return { intersection1X: Math.cos(direction) * r, intersection1Y: Math.sin(direction) * r };
         }
+        function pulse(that) {
+            for (let i in that.objects) {
+                if (checkCollision(that.x,that.y,that.pulseMax,that.objects[i])) {
+                    that.objects[i].break();
+                }
+            }
+        }
+        /*
+        if (this.pulseR >= this.pulseMax && this.pulseV >= 0) {this.pulseV *= -1;}
+        if (this.pulseV >= 0) { this.pulseR += this.pulseV; }
+        */
+        if (this.pflag) {
+            if (this.pulseR >= this.pulseMax) {this.pulseV *= -1;}
+            this.pulseR += this.pulseV;
+            if (this.pulseR <= 0) {this.pflag = false; this.pulseR = this.pulseInit; this.pulseV = Math.abs(this.pulseV);}
+        }
         try {
             var xcoord = (input.position.x),
                 ycoord = (input.position.y),
@@ -73,11 +96,14 @@ export class Player {
             if (input.mousedown) {
                 var collisions = false;
                 for (let i = 0; i < this.objects.length; i++) {
-                    collisions = collisions || checkCollision(xcoord, ycoord, this.inner, this.objects[i]);
+                    collisions = collisions || (checkCollision(xcoord, ycoord, this.inner, this.objects[i]) && !this.objects[i].break);
                 }
                 if (checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
                     this.x = xcoord;
                     this.y = ycoord;
+                    console.log(this.objects[0].isBroken,this.objects[1].isBroken);
+                    pulse(this);
+                    this.pflag = true;
                 }
             }
             this.mouse = [input.position.x, input.position.y];
@@ -89,8 +115,14 @@ export class Player {
             }
         }
         catch(err) {}
+        this.objects.forEach(block => {
+            block.update();
+        });
     }
     draw(context){
+        for (let a in this.objects) {
+            this.objects[a].draw(context);
+        }
         /*
         context.drawImage(this.image, 0, 0, this.width, this.height, this.x - this.width/2, this.y - this.height/2, this.width, this.height);
         */
@@ -101,14 +133,14 @@ export class Player {
         context.arc(this.mouse[0], this.mouse[1], this.inner, 0, 2 * Math.PI);
         context.stroke()
         context.beginPath();
+        context.arc(this.x, this.y, this.pulseR, 0, 2 * Math.PI);
+        context.stroke()
+        context.beginPath();
         context.arc(this.x, this.y, this.outer, 0, 2 * Math.PI);
         context.stroke();
         context.beginPath();
         context.moveTo(this.x,this.y);
         context.lineTo(this.end[0],this.end[1]);
         context.stroke();
-        for (let a in this.objects) {
-            this.objects[a].draw(context);
-        }
     }
 }

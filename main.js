@@ -32,6 +32,7 @@ window.addEventListener('load', function(){
         game.update();
         game.draw(c);
         requestAnimationFrame(animate);
+        // frame rate 60 fps https://www.codecademy.com/learn/learn-p5js/modules/p5js-animation/cheatsheet
     }
     animate();
 });
