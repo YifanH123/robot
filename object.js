@@ -20,11 +20,14 @@ export class Object {
             this.piecesX = [this.x, this.x + pieceWidth];
             this.piecesY = [this.y, this.y + pieceHeight];
             // TODO: use for each loop to place pieces
-            this.piecesX.forEach(i => {
-                this.piecesY.forEach(j => {
-                    this.pieces.push(new ObstaclePiece(i,j,pieceWidth,pieceHeight));
+            for (let i = 0; i < 1; i++) {
+                this.piecesX.forEach(i => {
+                    this.piecesY.forEach(j => {
+                        var d = this.game.rectToPolar(i - this.game.player.x, j - this.game.player.y);
+                        this.pieces.push(new ObstaclePiece(this.game,i,j,pieceWidth,pieceHeight,d.c));
+                    });
                 });
-            });
+            }
         }
     }
     update() {
@@ -45,24 +48,36 @@ export class Object {
 }
 
 export class ObstaclePiece {
-    constructor(x, y, width, height) {
+    constructor(game, x, y, width, height, direction) {
+        this.game = game;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.velocityX = Math.random() * 10 - 5; // Example: Randomize initial velocity
-        this.velocityY = Math.random() * 10 - 5;
-        this.rotationSpeed = Math.random() * 0.1 - 0.05; // Example: Randomize rotation speed
+        this.opacity = 1.0;
+        this.rotationSpeed = Math.random() * 0.1 - 0.05; // Randomize rotation speed
+        // initial velocity based on hit
+        this.c = direction + Math.random() * 0.5 - 0.25;
+        this.m = Math.random() * 10;
+        var rect = this.game.polarToRect(this.m, this.c);
+        console.log(rect);
+        this.velocityX = rect.x;
+        this.velocityY = rect.y;
     }
   
     update() {
-        this.x += this.velocityX;
-        this.y += this.velocityY;
-        // Apply any other desired transformations or physics updates to simulate the broken piece behavior
+        var pos = this.game.resistance(this.x, this.y, this.velocityX, this.velocityY);
+        this.x = pos.xpos;
+        this.y = pos.ypos;
+        this.velocityX = pos.vx;
+        this.velocityY = pos.vy;
+        if (this.opacity > 0.02) { this.opacity -= 0.02; }
     }
-  
+
     draw(context) {
+        context.save();
+        context.globalAlpha = this.opacity;
         context.fillRect(this.x, this.y, this.width, this.height);
-        // Apply any other desired drawing or visual effects to represent the broken piece
+        context.restore();
     }
 }
