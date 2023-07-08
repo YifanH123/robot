@@ -104,7 +104,7 @@ window.addEventListener('load', function(){
             sideCtx.fillStyle = "black";
             sideCtx.fill();
             sideCtx.beginPath();
-            sideCtx.moveTo(150,250);
+            sideCtx.moveTo(100,250);
             for (let j = 0; j <= filledSides; j++) {
                 var temp = this.polarToRect(radius,(j)/maxSideNum * 2 * Math.PI);
                 sideCtx.lineTo(temp.x+100, temp.y+250);
