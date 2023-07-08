@@ -10,6 +10,10 @@ export class Object {
         this.piecesY = [];
         this.isBroken = false;
     }
+    reset() {
+        this.isBroken = false;
+        this.pieces.length = 0;
+    }
     break() {
         if (!this.isBroken) {
             this.isBroken = true;
@@ -51,7 +55,9 @@ export class ObstaclePiece {
     constructor(game, x, y, width, height, direction) {
         this.game = game;
         this.x = x;
+        this.xI = x;
         this.y = y;
+        this.yI = y;
         this.width = width;
         this.height = height;
         this.opacity = 1.0;
@@ -64,7 +70,6 @@ export class ObstaclePiece {
         this.velocityX = rect.x;
         this.velocityY = rect.y;
     }
-  
     update() {
         var pos = this.game.resistance(this.x, this.y, this.velocityX, this.velocityY);
         this.x = pos.xpos;

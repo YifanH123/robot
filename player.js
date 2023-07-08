@@ -14,6 +14,10 @@ export class Player {
         this.mouse = [0,0];
         this.end = [0,0];
     }
+    reset() {
+        this.x = 0;
+        this.y = 0;
+    }
     update(input, objects, pulse){
         /* movement
         this.x += this.vx;

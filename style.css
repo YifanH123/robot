@@ -13,10 +13,23 @@
     cursor: none;
 }
 
+#sidecanvas{
+    border:5px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(250px, -50%);
+    cursor: none;
+}
+
 #player {
     display: none;
 }
 
 #background {
+    display: none;
+}
+
+#audio {
     display: none;
 }

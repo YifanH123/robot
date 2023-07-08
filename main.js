@@ -5,9 +5,14 @@ import { Pulse } from "./pulse.js";
 
 window.addEventListener('load', function(){
     const canvas = document.getElementById('gamecanvas');
-    const c = canvas.getContext('2d');
+    const sideCanvas = this.document.getElementById('sidecanvas');
+    const ctx = canvas.getContext('2d');
+    const sideCtx = sideCanvas.getContext('2d');
     canvas.width = 500;
     canvas.height = 500;
+    sideCanvas.width = 200;
+    sideCanvas.height = 500;
+    const button = document.getElementById('resetbutton');
 
     class Game {
         constructor(width, height){
@@ -19,6 +24,8 @@ window.addEventListener('load', function(){
             this.obstacles = [];
             this.obstacles.push(new Object(this,225,100,50,50));
             this.obstacles.push(new Object(this,225,300,50,50));
+            this.obstacles.push(new Object(this,100,300,50,50));
+            this.obstacles.push(new Object(this,100,100,50,50));
         }
         // functions
         checkCollision(x, y, radius, block) {
@@ -54,6 +61,17 @@ window.addEventListener('load', function(){
             }
             return { m: Math.sqrt(x * x + y * y), c: direction }
         }
+        reset() {
+            console.log("1");
+            this.player.reset();
+            console.log("2");
+            this.pulse.reset();
+            console.log("3");
+            this.obstacles.forEach(object => {
+                object.reset();
+            });
+            console.log("4");
+        }
         // update
         update(){
             this.player.update(this.input, this.obstacles, this.pulse);
@@ -62,23 +80,57 @@ window.addEventListener('load', function(){
             });
             this.pulse.update();
         }
-        draw(context){
-            this.player.draw(context);
+        drawSide() {
+            var maxSideNum = this.obstacles.length,
+                filledSides = 0,
+                radius = 60;
             this.obstacles.forEach(object => {
-                object.draw(context);
+                if (object.isBroken) { filledSides += 1; }
             });
-            this.pulse.draw(context);
+            if (maxSideNum == 2) {
+                maxSideNum *= 2;
+                filledSides *= 2;
+            }
+            if (maxSideNum == 1) {
+                maxSideNum *= 12;
+                filledSides *= 12; 
+            }
+            sideCtx.beginPath();
+            sideCtx.moveTo(100+radius,250);
+            for (let i = 1; i <= maxSideNum; i++) {
+                var temp = this.polarToRect(radius,(i)/maxSideNum * 2 * Math.PI);
+                sideCtx.lineTo(temp.x+100, temp.y+250);
+            }
+            sideCtx.fillStyle = "black";
+            sideCtx.fill();
+            sideCtx.beginPath();
+            sideCtx.moveTo(150,250);
+            for (let j = 0; j <= filledSides; j++) {
+                var temp = this.polarToRect(radius,(j)/maxSideNum * 2 * Math.PI);
+                sideCtx.lineTo(temp.x+100, temp.y+250);
+            }
+            sideCtx.fillStyle = "red";
+            sideCtx.fill();
+        }
+        draw(){
+            this.player.draw(ctx);
+            this.obstacles.forEach(object => {
+                object.draw(ctx);
+            });
+            this.pulse.draw(ctx);
+            this.drawSide();
         }
     }
 
     const game = new Game(canvas.width, canvas.height);
     console.log(game);
+    button.onclick = function(){game.reset();}
 
     function animate(){
-        c.clearRect(0, 0, canvas.width, canvas.height);
-        c.drawImage(document.getElementById("background"),0,0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(document.getElementById("background"),0,0);
         game.update();
-        game.draw(c);
+        game.draw();
         requestAnimationFrame(animate);
         // frame rate 60 fps https://www.codecademy.com/learn/learn-p5js/modules/p5js-animation/cheatsheet
     }
