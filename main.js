@@ -106,7 +106,7 @@ window.addEventListener('load', function(){
             sideCtx.beginPath();
             sideCtx.moveTo(100,250);
             for (let j = 0; j <= filledSides; j++) {
-                var temp = this.polarToRect(radius,(j)/maxSideNum * 2 * Math.PI);
+                var temp = this.polarToRect(radius,(1-j/maxSideNum) * 2 * Math.PI);
                 sideCtx.lineTo(temp.x+100, temp.y+250);
             }
             sideCtx.fillStyle = "red";
