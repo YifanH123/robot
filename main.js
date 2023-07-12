@@ -3,6 +3,7 @@ import { InputHandler } from "./input.js";
 import { Object } from "./object.js";
 import { Pulse } from "./pulse.js";
 
+
 window.addEventListener('load', function(){
     const canvas = document.getElementById('gamecanvas');
     const sideCanvas = this.document.getElementById('sidecanvas');
@@ -14,6 +15,7 @@ window.addEventListener('load', function(){
     sideCanvas.height = 500;
     const button1 = document.getElementById('resetbutton');
     const button2 = document.getElementById('pauseM');
+    const startG = document.getElementById('start');
     // music
     var victoryM = document.getElementById("victory");
 
@@ -158,9 +160,17 @@ window.addEventListener('load', function(){
             this.drawSide();
         }
     }
-
     const game = new Game(canvas.width, canvas.height);
     console.log(game);
+    victoryM.volume = 0.1;
+    function startGame() {
+        animate();
+        victoryM.play();
+        canvas.removeAttribute("hidden");
+        sideCanvas.removeAttribute("hidden");
+        startG.style.visibility = "hidden";
+    }
+    startG.onclick = startGame;
     button1.onclick = function(){game.reset();}
     button2.onclick = function(){
         if (victoryM.paused) {
@@ -169,7 +179,6 @@ window.addEventListener('load', function(){
             victoryM.pause();
         }
     }
-    victoryM.volume = 0.1;
 
     function animate(){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -179,5 +188,4 @@ window.addEventListener('load', function(){
         requestAnimationFrame(animate);
         // frame rate 60 fps https://www.codecademy.com/learn/learn-p5js/modules/p5js-animation/cheatsheet
     }
-    animate();
 });

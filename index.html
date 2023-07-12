@@ -9,14 +9,14 @@
   <body>
     <button id="resetbutton" class="hidden-button">Reset</button>
     <button id="pauseM" class="hidden-button">Pause</button>
-    <button id="start">Start Game</button>
+    <button id="start" class="start-button">Start Game</button>
     <script type="module" src="./main.js"></script>
     <script type="module" src="./player.js"></script>
     <script type="module" src="./input.js"></script>
     <script type="module" src="./object.js"></script>
     <script type="module" src="./pulse.js"></script>
-    <canvas id="gamecanvas"></canvas>
-    <canvas id="sidecanvas"></canvas>
+    <canvas hidden id="gamecanvas" class="canvases"></canvas>
+    <canvas hidden id="sidecanvas" class="canvases"></canvas>
     <img id="player" src="assets/player.png">
     <img id="background" src="assets/background.png">
     <audio id="pulse" class="audio" src="assets/stomping.wav"></audio>

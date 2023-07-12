@@ -3,7 +3,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 #gamecanvas {
     border:5px solid black;
     position: absolute;
@@ -12,7 +11,6 @@
     transform: translate(-50%, -50%);
     cursor: none;
 }
-
 #sidecanvas{
     border:5px solid black;
     position: absolute;
@@ -21,33 +19,46 @@
     transform: translate(250px, -50%);
     cursor: none;
 }
-
 #player {
     display: none;
 }
-
 #background {
     display: none;
 }
-
 .audio {
     display: none;
 }
-
 .hidden-button {
     position: absolute;
     overflow: hidden;
-    opacity: 1;
+    opacity: 0;
     padding: 10px 10px 10px 10px;
 }
-
 #pauseM {
     position: absolute;
     left: 60px
 }
-
-#start {
+.start-button {
     position: absolute;
-    top:20%;
+    top: 20%;
     left: 50%;
+    transform: translateX(-50%);
+}
+#start {
+    padding: 15px 30px;
+    font-size: 24px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+    margin: 0 auto;
+}
+#start:hover {
+  background-color: #2980b9;
+}
+#start:active {
+  background-color: #21618c;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
