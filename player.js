@@ -6,17 +6,17 @@ export class Player {
         this.height = 91.3;
         this.inner = 20;
         this.outer = 90;
-        this.x = 0;
-        this.y = 0;
+        this.x = 250;
+        this.y = 250;
         this.vx = 0;
         this.vy = 0;
         this.speed = 10;
-        this.mouse = [0,0];
-        this.end = [0,0];
+        this.mouse = [this.x,this.y];
+        this.end = [this.x,this.y];
     }
     reset() {
-        this.x = 0;
-        this.y = 0;
+        this.x = 250;
+        this.y = 250;
     }
     update(input, objects, pulse){
         /* movement
@@ -72,10 +72,14 @@ export class Player {
                 if (checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
                     this.x = xcoord;
                     this.y = ycoord;
-                    console.log(objects[0].isBroken,objects[1].isBroken);
-                    pulse.pulse(this);
-                    pulse.pflag = true;
+                    if (!pulse.pflag2) {
+                        pulse.pulse(this);
+                        pulse.pflag = true;
+                        pulse.pflag2 = true;
+                    }
                 }
+            } else {
+                pulse.pflag2 = false;
             }
             this.mouse = [input.position.x, input.position.y];
             if (checkInbound(xcoord,ycoord,this.x,this.y,change)) {

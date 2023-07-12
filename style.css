@@ -30,14 +30,12 @@
     display: none;
 }
 
-#audio {
+.audio {
     display: none;
 }
 
 #resetbutton {
     position: absolute;
-    width: 10;
-    height: 10;
     overflow: hidden;
     opacity: 0;
 }

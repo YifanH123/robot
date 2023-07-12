@@ -2,17 +2,19 @@ export class Pulse {
     constructor(game) {
         this.game = game
         this.player = game.player
-        this.stomp = document.getElementById('audio');
+        this.stomp = document.getElementById('pulse');
         this.pulseInit = this.player.inner; // the starting point of the radius is set to diameter of player
         this.pulseR = 0;
         this.pulseV = 3;
         this.pulseMax = 40;
         this.pflag = false;
+        this.pflag2 = false;
     }
     reset() {
         this.pulseR = 0;
         this.pulseV = Math.abs(this.pulseV);
         this.pflag = false;
+        this.pflag2 = false;
     }
     update() {
         if (this.pflag) {

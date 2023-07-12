@@ -22,23 +22,62 @@ window.addEventListener('load', function(){
             this.input = new InputHandler(this);
             this.pulse = new Pulse(this);
             this.obstacles = [];
-            this.obstacles.push(new Object(this,225,100,50,50));
-            this.obstacles.push(new Object(this,225,300,50,50));
-            this.obstacles.push(new Object(this,100,300,50,50));
-            this.obstacles.push(new Object(this,100,100,50,50));
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+            }
+            var gridWidth = 3,
+                gridHeight = 3,
+                griddedX = this.width/gridWidth,
+                griddedY = this.width/gridHeight;
+            for (let i = 0; i < gridWidth; i++) {
+                for (let j = 0; j < gridHeight; j++) {
+                    var tempx = getRandomInt(i*griddedX,(i+1)*griddedX),
+                        tempy = getRandomInt(j*griddedY,(j+1)*griddedY),
+                        obby = [tempx,tempy,50,50];
+                    if (this.checkInCanvas(canvas,obby) && !this.checkCollision(250,250,20,obby)) {
+                        this.obstacles.push(new Object(this,obby[0],obby[1],obby[2],obby[3]));
+                    }
+                }
+            }
         }
         // functions
-        checkCollision(x, y, radius, block) {
-            // Check for collision between player and block using bounding box collision detection
-            if (
-                x < block.x + block.width + radius &&
-                x + radius > block.x &&
-                y < block.y + block.height + radius &&
-                y + radius > block.y
-            ) {
-                return true;
+        checkInCanvas(canvas, object) {
+            if (object instanceof Object) {
+                return (
+                    object.x >= 0 &&
+                    object.x + object.width <= canvas.width &&
+                    object.y >= 0 &&
+                    object.y + object.height <= canvas.height
+                );
             }
-            return false;
+            if (object instanceof Array) {
+                return (
+                    object[0] >= 0 &&
+                    object[0] + object[2] <= canvas.width &&
+                    object[1] >= 0 &&
+                    object[1] + object[3] <= canvas.height
+                );
+            }
+        }
+        checkCollision(x, y, radius, object) {
+            if (object instanceof Object) {
+                return (
+                    x < object.x + object.width + radius &&
+                    x + radius > object.x &&
+                    y < object.y + object.height + radius &&
+                    y + radius > object.y
+                );
+            }
+            if (object instanceof Array) {
+                return (
+                    x < object[0] + object[2] + radius &&
+                    x + radius > object[0] &&
+                    y < object[1] + object[3] + radius &&
+                    y + radius > object[1]
+                );
+            }
         }
         resistance(x, y, vx, vy) {
             vx = vx / 1.04;
@@ -57,20 +96,15 @@ window.addEventListener('load', function(){
                 }
             } else {
                 var direction = Math.atan(y/x) + Math.PI;
-                console.log(direction);
             }
             return { m: Math.sqrt(x * x + y * y), c: direction }
         }
         reset() {
-            console.log("1");
             this.player.reset();
-            console.log("2");
             this.pulse.reset();
-            console.log("3");
             this.obstacles.forEach(object => {
                 object.reset();
             });
-            console.log("4");
         }
         // update
         update(){
@@ -96,9 +130,9 @@ window.addEventListener('load', function(){
                 filledSides *= 12; 
             }
             sideCtx.beginPath();
-            sideCtx.moveTo(100+radius,250);
+            sideCtx.moveTo(100,250 - radius);
             for (let i = 1; i <= maxSideNum; i++) {
-                var temp = this.polarToRect(radius,(i)/maxSideNum * 2 * Math.PI);
+                var temp = this.polarToRect(radius,(i)/maxSideNum * 2 * Math.PI - Math.PI / 2);
                 sideCtx.lineTo(temp.x+100, temp.y+250);
             }
             sideCtx.fillStyle = "black";
@@ -106,7 +140,7 @@ window.addEventListener('load', function(){
             sideCtx.beginPath();
             sideCtx.moveTo(100,250);
             for (let j = 0; j <= filledSides; j++) {
-                var temp = this.polarToRect(radius,(1-j/maxSideNum) * 2 * Math.PI);
+                var temp = this.polarToRect(radius,(1-j/maxSideNum) * 2 * Math.PI - Math.PI / 2);
                 sideCtx.lineTo(temp.x+100, temp.y+250);
             }
             sideCtx.fillStyle = "red";

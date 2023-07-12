@@ -9,6 +9,7 @@ export class Object {
         this.piecesX = [];
         this.piecesY = [];
         this.isBroken = false;
+        this.breaking = document.getElementById('breakblock');
     }
     reset() {
         this.isBroken = false;
@@ -16,6 +17,8 @@ export class Object {
     }
     break() {
         if (!this.isBroken) {
+            this.breaking.currentTime = 0;
+            this.breaking.play();
             this.isBroken = true;
             // Generate smaller pieces or split the obstacle into individual pieces
             // Example: Split the obstacle into four smaller rectangles
@@ -66,7 +69,6 @@ export class ObstaclePiece {
         this.c = direction + Math.random() * 0.5 - 0.25;
         this.m = Math.random() * 10;
         var rect = this.game.polarToRect(this.m, this.c);
-        console.log(rect);
         this.velocityX = rect.x;
         this.velocityY = rect.y;
     }
