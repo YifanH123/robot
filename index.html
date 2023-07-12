@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <button id="resetbutton" class="hidden-reset-button">Reset</button>
+    <button id="resetbutton" class="hidden-button">Reset</button>
+    <button id="pauseM" class="hidden-button">Pause</button>
+    <button id="start">Start Game</button>
     <script type="module" src="./main.js"></script>
     <script type="module" src="./player.js"></script>
     <script type="module" src="./input.js"></script>
@@ -19,5 +21,6 @@
     <img id="background" src="assets/background.png">
     <audio id="pulse" class="audio" src="assets/stomping.wav"></audio>
     <audio id="breakblock" class="audio" src="assets/breakingblock.wav"></audio>
+    <audio controls loop id="victory" class="audio" src="assets/victory-background.mp3"></audio>
   </body>
 </html>

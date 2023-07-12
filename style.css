@@ -34,8 +34,20 @@
     display: none;
 }
 
-#resetbutton {
+.hidden-button {
     position: absolute;
     overflow: hidden;
-    opacity: 0;
+    opacity: 1;
+    padding: 10px 10px 10px 10px;
+}
+
+#pauseM {
+    position: absolute;
+    left: 60px
+}
+
+#start {
+    position: absolute;
+    top:20%;
+    left: 50%;
 }

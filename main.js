@@ -12,7 +12,10 @@ window.addEventListener('load', function(){
     canvas.height = 500;
     sideCanvas.width = 200;
     sideCanvas.height = 500;
-    const button = document.getElementById('resetbutton');
+    const button1 = document.getElementById('resetbutton');
+    const button2 = document.getElementById('pauseM');
+    // music
+    var victoryM = document.getElementById("victory");
 
     class Game {
         constructor(width, height){
@@ -158,7 +161,15 @@ window.addEventListener('load', function(){
 
     const game = new Game(canvas.width, canvas.height);
     console.log(game);
-    button.onclick = function(){game.reset();}
+    button1.onclick = function(){game.reset();}
+    button2.onclick = function(){
+        if (victoryM.paused) {
+            victoryM.play();
+        } else {
+            victoryM.pause();
+        }
+    }
+    victoryM.volume = 0.1;
 
     function animate(){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
