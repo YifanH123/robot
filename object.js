@@ -18,6 +18,7 @@ export class Object {
     break() {
         if (!this.isBroken) {
             this.breaking.currentTime = 0;
+            this.breaking.volume = 0.3;
             this.breaking.play();
             this.isBroken = true;
             // Generate smaller pieces or split the obstacle into individual pieces

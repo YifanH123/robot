@@ -25,6 +25,7 @@ export class Pulse {
     }
     pulse(that) {
         this.stomp.currentTime = 0;
+        this.stomp.volume = 0.9;
         this.stomp.play();
         this.game.obstacles.forEach(i => {
             if (this.game.checkCollision(that.x,that.y,this.pulseMax,i)) {

@@ -173,7 +173,7 @@ window.addEventListener('load', function(){
     }
     const game = new Game(canvas.width, canvas.height);
     console.log(game);
-    victoryM.volume = 0.05;
+    victoryM.volume = 0.08;
     function startGame() {
         animate();
         victoryM.play();
@@ -182,7 +182,7 @@ window.addEventListener('load', function(){
         startG.style.visibility = "hidden";
     }
     startG.onclick = startGame;
-    button1.onclick = function(){game.reset();}
+    button1.onclick = function(){ game.reset(); }
     button2.onclick = function(){
         if (victoryM.paused) {
             victoryM.play();

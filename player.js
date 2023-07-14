@@ -16,7 +16,7 @@ export class Player {
         this.mouse = [this.x,this.y];
         this.end = [this.x,this.y];
         this.lastTimeFired = new Date().getTime();
-        this.reloadTime = 100; // in milliseconds
+        this.reloadTime = 500; // in milliseconds
     }
     reset() {
         this.x = 250;
@@ -91,9 +91,7 @@ export class Player {
                     collisions = collisions || (this.game.checkCollision(xcoord, ycoord, this.inner, o) && !o.isBroken);
                 });
                 // update if in range
-                if (this.checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
-                    // moved into function
-                } else {
+                if (!this.checkInbound(xcoord,ycoord,this.x,this.y,change) || collisions) {
                     if (new Date().getTime() - this.lastTimeFired > this.reloadTime) {
                         var newBullet = new Bullet(this.game);
                         newBullet.shoot();

@@ -10,12 +10,14 @@ export class Bullet {
         this.radius = 10;
         this.resistance = 1.001;
         this.isShot = false;
+        this.shot = document.getElementById('pew');
         this.terminate = false;
     }
     shoot() {
         if (!this.isShot) {
-            //this.breaking.currentTime = 0;
-            //this.breaking.play();
+            this.shot.currentTime = 0;
+            this.shot.volume = 0.15;
+            this.shot.play();
             this.isShot = true;
             var d = this.game.rectToPolar(this.player.mouse[0] - this.player.x, this.player.mouse[1] - this.player.y);
             var coord = this.game.polarToRect(this.speed, d.c);
