@@ -1,3 +1,5 @@
+import { Bullet } from "./shoot.js";
+
 export class Player {
     constructor(game) {
         this.game = game;
@@ -13,10 +15,33 @@ export class Player {
         this.speed = 10;
         this.mouse = [this.x,this.y];
         this.end = [this.x,this.y];
+        this.lastTimeFired = new Date().getTime();
+        this.reloadTime = 100; // in milliseconds
     }
     reset() {
         this.x = 250;
         this.y = 250;
+    }
+    checkInbound(x1,y1,x2,y2,c) {
+        return (x1 - x2) ** 2 + (y1 - y2) ** 2 <= c;
+    }
+    teleport(input) {
+        var collisions = false;
+        this.game.obstacles.forEach(o => {
+            collisions = collisions || (this.game.checkCollision(xcoord, ycoord, this.inner, o) && !o.isBroken);
+        });
+        var xcoord = (input.position.x),
+            ycoord = (input.position.y),
+            change = this.outer * this.outer;
+        if (this.checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
+            this.x = xcoord;
+            this.y = ycoord;
+            if (!pulse.pflag2) {
+                this.game.pulse.pulse(this);
+                this.game.pulse.pflag = true;
+                this.game.pulse.pflag2 = true;
+            }
+        }
     }
     update(input, objects, pulse){
         /* movement
@@ -37,9 +62,6 @@ export class Player {
         if (this.y > this.game.height - this.height) this.y = this.game.height - this.height;
         */
         // click
-        function checkInbound(x1,y1,x2,y2,c) {
-            return (x1 - x2) ** 2 + (y1 - y2) ** 2 <= c;
-        }
         function findIntersectionCircle(midx,midy,r,lendx,lendy){
             const a = lendx - midx;
             const b = lendy - midy;
@@ -69,32 +91,37 @@ export class Player {
                     collisions = collisions || (this.game.checkCollision(xcoord, ycoord, this.inner, o) && !o.isBroken);
                 });
                 // update if in range
-                if (checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
-                    this.x = xcoord;
-                    this.y = ycoord;
-                    if (!pulse.pflag2) {
-                        pulse.pulse(this);
-                        pulse.pflag = true;
-                        pulse.pflag2 = true;
+                if (this.checkInbound(xcoord,ycoord,this.x,this.y,change) && !collisions) {
+                    // moved into function
+                } else {
+                    if (new Date().getTime() - this.lastTimeFired > this.reloadTime) {
+                        var newBullet = new Bullet(this.game);
+                        newBullet.shoot();
+                        this.game.bullets.push(newBullet);
+                        this.lastTimeFired = new Date().getTime();
                     }
                 }
             } else {
                 pulse.pflag2 = false;
             }
+            // line to cursor
             this.mouse = [input.position.x, input.position.y];
-            if (checkInbound(xcoord,ycoord,this.x,this.y,change)) {
+            if (this.checkInbound(xcoord,ycoord,this.x,this.y,change)) {
                 this.end = this.mouse;
             } else {
                 var a = findIntersectionCircle(this.x,this.y,this.outer,this.mouse[0],this.mouse[1]);
                 this.end = [a.intersection1X + this.x, a.intersection1Y + this.y];
             }
         }
-        catch(err) {}
+        catch(err) {
+            console.log(err);
+        }
     }
     draw(context){
         /*
         context.drawImage(this.image, 0, 0, this.width, this.height, this.x - this.width/2, this.y - this.height/2, this.width, this.height);
         */
+        context.fillStyle = "black";
         context.beginPath();
         context.arc(this.x, this.y, this.inner, 0, 2 * Math.PI);
         context.fill();

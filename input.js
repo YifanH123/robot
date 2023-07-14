@@ -1,5 +1,7 @@
 export class InputHandler {
-    constructor(){
+    constructor(game) {
+        this.canvas = document.getElementById('gamecanvas');
+        this.game = game;
         this.keys = [];
         this.mousedown = false;
         this.position;
@@ -34,13 +36,15 @@ export class InputHandler {
         });
         */
         window.addEventListener('mousedown', (e) => {
+            if (this?.canvas && !this.canvas.hasAttribute("hidden")) {
             this.mousedown = true;
+            this.game.player.teleport(this);
+            }
         });
         window.addEventListener('mouseup', (e) => {
             this.mousedown = false;
         });
         window.addEventListener('mousemove', (e) => {
-            this.mousedown = false;
             var pos = getMousePos(document.getElementById("gamecanvas"), e);
             this.position = pos;
         });

@@ -49,6 +49,7 @@ export class Object {
             this.pieces.forEach(piece => piece.draw(context));
         } else {
             // Draw the original obstacle
+            context.fillStyle = "blue";
             context.fillRect(this.x, this.y, this.width, this.height);
         }
     }
@@ -84,6 +85,7 @@ export class ObstaclePiece {
     draw(context) {
         context.save();
         context.globalAlpha = this.opacity;
+        context.fillStyle = "purple";
         context.fillRect(this.x, this.y, this.width, this.height);
         context.restore();
     }

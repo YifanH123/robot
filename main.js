@@ -2,6 +2,7 @@ import { Player } from "./player.js";
 import { InputHandler } from "./input.js";
 import { Object } from "./object.js";
 import { Pulse } from "./pulse.js";
+import { Bullet } from "./shoot.js";
 
 
 window.addEventListener('load', function(){
@@ -26,11 +27,12 @@ window.addEventListener('load', function(){
             this.player = new Player(this);
             this.input = new InputHandler(this);
             this.pulse = new Pulse(this);
+            this.bullets = [];
             this.obstacles = [];
             function getRandomInt(min, max) {
                 min = Math.ceil(min);
                 max = Math.floor(max);
-                return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+                return Math.floor(Math.random() * (max - min) + min);
             }
             var gridWidth = 3,
                 gridHeight = 3,
@@ -84,9 +86,9 @@ window.addEventListener('load', function(){
                 );
             }
         }
-        resistance(x, y, vx, vy) {
-            vx = vx / 1.04;
-            vy = vy / 1.04;
+        resistance(x, y, vx, vy, res = 1.04) { // default for block breaking
+            vx = vx / res;
+            vy = vy / res;
             return { xpos: x + vx, ypos: y + vy, vx: vx, vy: vy };
         }
         polarToRect(m, c) {
@@ -103,21 +105,6 @@ window.addEventListener('load', function(){
                 var direction = Math.atan(y/x) + Math.PI;
             }
             return { m: Math.sqrt(x * x + y * y), c: direction }
-        }
-        reset() {
-            this.player.reset();
-            this.pulse.reset();
-            this.obstacles.forEach(object => {
-                object.reset();
-            });
-        }
-        // update
-        update(){
-            this.player.update(this.input, this.obstacles, this.pulse);
-            this.obstacles.forEach(object => {
-                object.update();
-            });
-            this.pulse.update();
         }
         drawSide() {
             var maxSideNum = this.obstacles.length,
@@ -151,18 +138,42 @@ window.addEventListener('load', function(){
             sideCtx.fillStyle = "red";
             sideCtx.fill();
         }
-        draw(){
+        // update
+        reset() {
+            this.player.reset();
+            this.pulse.reset();
+            this.obstacles.forEach(object => {
+                object.reset();
+            });
+        }
+        update() {
+            this.player.update(this.input, this.obstacles, this.pulse);
+            this.obstacles.forEach(object => {
+                object.update();
+            });
+            this.pulse.update();
+            this.bullets = this.bullets.filter(object => {
+                return !object.terminate;
+            });
+            this.bullets.forEach(object => {
+                object.update();
+            });
+        }
+        draw() {
             this.player.draw(ctx);
             this.obstacles.forEach(object => {
                 object.draw(ctx);
             });
             this.pulse.draw(ctx);
+            this.bullets.forEach(object => {
+                object.draw(ctx);
+            });
             this.drawSide();
         }
     }
     const game = new Game(canvas.width, canvas.height);
     console.log(game);
-    victoryM.volume = 0.1;
+    victoryM.volume = 0.05;
     function startGame() {
         animate();
         victoryM.play();
@@ -186,6 +197,7 @@ window.addEventListener('load', function(){
         game.update();
         game.draw();
         requestAnimationFrame(animate);
-        // frame rate 60 fps https://www.codecademy.com/learn/learn-p5js/modules/p5js-animation/cheatsheet
+        // frame rate 60 fps
+        // https://www.codecademy.com/learn/learn-p5js/modules/p5js-animation/cheatsheet
     }
 });
